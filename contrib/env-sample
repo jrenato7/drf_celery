@@ -1,0 +1,17 @@
+# You can use the secret_gen.py script to generate a good Secret Key, after
+# that, replace the THIS_IS_NOT_A_GOOD_SECRET value below.
+SECRET_KEY=THIS_IS_NOT_A_GOOD_SECRET
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1, .localhost
+
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE=drf_celery_db
+SQL_HOST=drf_celery_db
+SQL_PORT=5432
+
+DATABASE=postgres
+
+DJANGO_SETTINGS_MODULE=customers.settings
+
+# This variable is used by swagger.
+BASE_URL=http://localhost:5050
