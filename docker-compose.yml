@@ -16,9 +16,15 @@ services:
       - "5433:5432"
   celery_broker:
     container_name: "drf_celery_broker"
-    image: rabbitmq:3.8.2
+    image: rabbitmq:3.9-alpine
     restart: always
     ports:
       - "5672:5672"
+  redis:
+    container_name: "drf_celery_redis"
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
 volumes:
   postgres_data:
