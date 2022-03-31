@@ -16,7 +16,11 @@ stop:
 	@docker-compose stop
 
 logs:
+ifdef ARGS
+	@docker-compose logs -f $(ARGS)
+else
 	@docker-compose logs -f
+endif
 
 migrate:
 	@docker-compose exec drf_celery python manage.py migrate --noinput

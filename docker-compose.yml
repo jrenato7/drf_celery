@@ -45,14 +45,15 @@ services:
     ports:
       - "6379:6379"
   celery_worker:
-    build:
-      context: .
-      dockerfile: ./drf_celery/Dockerfile
     container_name: "drf_celery_worker"
-    image: drf_celery_worker
-    command: /start-celeryworker
+    image: drf_celery_web
+    command: /start_celeryworker.sh
     volumes:
       - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=drf_celery.settings
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
     env_file:
       - ./drf_celery/.env
     depends_on:

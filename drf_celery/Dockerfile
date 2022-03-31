@@ -17,10 +17,10 @@ COPY ./entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//g' /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY ./start-celeryworker.sh /start-celeryworker.sh
-RUN sed -i 's/\r$//g' /start-celeryworker.sh
-RUN chmod +x /start-celeryworker.sh
+COPY ./start_celeryworker.sh /start_celeryworker.sh
+RUN sed -i 's/\r$//g' /start_celeryworker.sh
+RUN chmod +x /start_celeryworker.sh
 
 WORKDIR /app
 
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/entrypoint.sh"]
