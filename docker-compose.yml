@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  drf_celery_db:
+    container_name: "drf_celery_db"
+    image: postgres:13.2-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+      - POSTGRES_DB=drf_celery_db
+    ports:
+      - "5433:5432"
+  celery_broker:
+    container_name: "drf_celery_broker"
+    image: rabbitmq:3.8.2
+    restart: always
+    ports:
+      - "5672:5672"
+volumes:
+  postgres_data:
