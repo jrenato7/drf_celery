@@ -138,9 +138,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CELERY_BROKER_URL = 'amqp://celery_broker:5672/'
 # CELERY_BROKER_URL = 'amqp://localhost:5672'
 
-CELERY_BROKER_URL = "redis://redis:6379"  # config("CELERY_BROKER", "redis://127.0.0.1:6379")
+CELERY_BROKER_URL = "redis://redis"  # config("CELERY_BROKER", "redis://127.0.0.1:6379")
 # CELERY_RESULT_BACKEND = "redis://redis:6379"  # config("CELERY_BACKEND", "redis://127.0.0.1:6379")
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis'
 
 # CELERY_RESULT_BACKEND = config("SQL_DATABASE", BASE_DIR / 'db.sqlite3')
 

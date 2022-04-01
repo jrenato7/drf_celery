@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
-    container_name: db
+  celery_db:
+    container_name: celery_db
     image: postgres:13.2-alpine
     restart: always
     volumes:
@@ -11,11 +11,11 @@ services:
       - LC_ALL=C.UTF-8
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
-      - POSTGRES_DB=drf_celery_db
+      - POSTGRES_DB=celery_db
     ports:
       - 5433:5432
   redis:
-    container_name: "redis"
+    container_name: redis
     image: redis:6.2-alpine
     restart: always
     ports:
@@ -53,6 +53,7 @@ services:
       - .env
     depends_on:
       - redis
-      - db
+      - celery_db
+      - web
 volumes:
   postgres_data:
