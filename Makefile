@@ -26,3 +26,5 @@ migrate:
 	@docker-compose exec drf_celery python manage.py migrate --noinput
 
 run: up migrate
+
+reload: down up
