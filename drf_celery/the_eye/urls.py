@@ -8,5 +8,5 @@ from .views import store_event
 app_name = 'the_eye'
 
 urlpatterns = [
-    path('/', store_event, name='event_save'),
+    path(r'', store_event, name='event_save'),
 ]
