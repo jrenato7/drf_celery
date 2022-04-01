@@ -37,18 +37,19 @@ services:
       - SQL_PASSWORD=${SQL_PASSWORD}
     depends_on:
       - redis
-      - db
+      - celery_db
   celery:
     container_name: celery
     build:
       context: .
-    command: celery -A drf_celery worker -l INFO
+    command: /start_celeryworker.sh
     volumes:
       - .:/app
     environment:
       - DJANGO_SETTINGS_MODULE=drf_celery.settings
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
+      - DEBUG=False
     env_file:
       - .env
     depends_on:

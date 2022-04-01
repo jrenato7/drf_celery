@@ -2,7 +2,7 @@ from celery import shared_task
 from .serializers import EventSerializer
 
 
-@shared_task(queue='events')
+@shared_task()
 def validate_event_task(event):
     return _validate_event(event)
 
