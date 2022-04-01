@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db
+    image: postgres:13.2-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+      - POSTGRES_DB=drf_celery_db
+    ports:
+      - 5433:5432
+  redis:
+    container_name: "redis"
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - 6379:6379
+  web:
+    container_name: web
+    build:
+      context: .
+    command: gunicorn drf_celery.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 5050:8000
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=drf_celery.settings
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+    depends_on:
+      - redis
+      - db
+  celery:
+    container_name: celery
+    build:
+      context: .
+    command: celery -A drf_celery worker -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=drf_celery.settings
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+volumes:
+  postgres_data:

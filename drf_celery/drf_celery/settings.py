@@ -133,12 +133,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # CELERY
-CELERY_BROKER_URL = 'amqp://celery_broker:5672/'
-# CELERY_BROKER_URL = 'amqp://localhost:5672'
-# CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 
-# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+# CELERY_BROKER_URL = 'amqp://127.0.0.1:5672/'
+# CELERY_BROKER_URL = 'amqp://celery_broker:5672/'
+# CELERY_BROKER_URL = 'amqp://localhost:5672'
+
+CELERY_BROKER_URL = "redis://redis:6379"  # config("CELERY_BROKER", "redis://127.0.0.1:6379")
+# CELERY_RESULT_BACKEND = "redis://redis:6379"  # config("CELERY_BACKEND", "redis://127.0.0.1:6379")
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+
+# CELERY_RESULT_BACKEND = config("SQL_DATABASE", BASE_DIR / 'db.sqlite3')
+
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

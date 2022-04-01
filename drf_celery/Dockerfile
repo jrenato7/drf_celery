@@ -9,7 +9,7 @@ RUN apk update \
     && apk add --no-cache postgresql-dev gcc python3-dev musl-dev
 
 # install dependencies
-COPY ./requirements/libs.txt /requirements.txt
+COPY libs.txt /requirements.txt
 RUN pip install --upgrade pip \
     && pip install -r /requirements.txt
 
