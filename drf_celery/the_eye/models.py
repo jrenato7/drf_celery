@@ -7,6 +7,9 @@ class Event(models.Model):
     name = models.CharField()
     timestamp = models.DateTimeField()
 
+    class Meta:
+        ordering = ['timestamp']
+
 
 class PageView(models.Model):
     event = models.ForeignKey('the_eye.Event', on_delete=models.CASCADE)
