@@ -34,3 +34,10 @@ class Account(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     event_form = models.ForeignKey('the_eye.EventForm', on_delete=models.CASCADE)
+
+
+class ErrorLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    event = models.TextField(null=False, blank=False)
+    errors = models.TextField(null=True)
+    message = models.CharField(max_length=150)
