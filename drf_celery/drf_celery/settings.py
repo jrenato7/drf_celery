@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'the_eye',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
