@@ -1,6 +1,18 @@
+import json
+
 from celery import shared_task
+
 from .serializers import EventSerializer, PageViewSerializer, \
     PageClickSerializer, EventFormSerializer
+from .models import ErrorLog
+
+
+class InvalidPayload(Exception):
+    pass
+
+
+class SerializerError(Exception):
+    pass
 
 
 @shared_task()
@@ -27,7 +39,10 @@ def _validate_event(event_data):
         elif event_name == "submit" and event_category == "form interaction":
             serializer_payload = EventFormSerializer(data=payload)
         else:
-            raise Exception("Payload not found!")
+            message = 'Payload not found!'
+            log_error(event_data, message)
+
+            raise InvalidPayload(message)
 
         if serializer_payload.is_valid():
             # store records on DB
@@ -39,8 +54,20 @@ def _validate_event(event_data):
 
             serializer_payload.create(payload)
         else:
-            print(serializer_payload.errors)
-            # raise Exception("Payload Invalid!")
+            message = 'Payload Invalid!'
+            log_error(event_data, message, serializer_payload.errors)
+            raise SerializerError(message)
     else:
-        # raise Exception("Event Invalid!")
-        print(serializer_event.errors)
+        message = 'Event Invalid!'
+        log_error(event_data, message, serializer_event.errors)
+        raise SerializerError(message)
+
+
+def log_error(event_data, message, errors=None):
+    error_data = {
+        'event': json.dumps(event_data),
+        'errors': json.dumps(errors) if errors else None,
+        'message': message
+    }
+    error = ErrorLog.objects.create(**error_data)
+    error.save()
