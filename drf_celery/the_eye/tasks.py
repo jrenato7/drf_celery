@@ -10,6 +10,8 @@ def validate_event_task(event):
 
 def _validate_event(event_data):
     serializer_event = EventSerializer(data=event_data)
+
+    # validate event
     event_valid = serializer_event.is_valid()
 
     if event_valid:
@@ -28,4 +30,5 @@ def _validate_event(event_data):
             raise Exception("Payload not found!")
 
         if serializer_payload.is_valid():
+
             import pprint; pprint.pprint(serializer_payload.data)
