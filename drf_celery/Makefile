@@ -32,5 +32,6 @@ ifdef APP
 	@docker-compose stop $(APP)
 	@docker-compose start $(APP)
 else
-	down up
+	$(MAKE) down
+	$(MAKE) up
 endif
