@@ -27,4 +27,10 @@ migrate:
 
 run: up migrate
 
-reload: down up
+reload:
+ifdef APP
+	@docker-compose stop $(APP)
+	@docker-compose start $(APP)
+else
+	down up
+endif
