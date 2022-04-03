@@ -3,8 +3,8 @@ from django.db import models
 
 class Event(models.Model):
     session_id = models.UUIDField()
-    category = models.CharField()
-    name = models.CharField()
+    category = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     timestamp = models.DateTimeField()
 
     class Meta:
@@ -13,24 +13,24 @@ class Event(models.Model):
 
 class PageView(models.Model):
     event = models.ForeignKey('the_eye.Event', on_delete=models.CASCADE)
-    host = models.CharField()
-    path = models.CharField()
+    host = models.CharField(max_length=150)
+    path = models.CharField(max_length=250)
 
 
 class PageClick(models.Model):
     event = models.ForeignKey('the_eye.Event', on_delete=models.CASCADE)
-    host = models.CharField()
-    path = models.CharField()
-    element = models.CharField()
+    host = models.CharField(max_length=150)
+    path = models.CharField(max_length=250)
+    element = models.CharField(max_length=150)
 
 
-class AccountSubmit(models.Model):
+class EventForm(models.Model):
     event = models.ForeignKey('the_eye.Event', on_delete=models.CASCADE)
-    host = models.CharField()
-    path = models.CharField()
+    host = models.CharField(max_length=150)
+    path = models.CharField(max_length=250)
 
 
 class Account(models.Model):
-    first_name = models.CharField()
-    last_name = models.CharField()
-    account_submit = models.ForeignKey('the_eye.AccountSubmit', on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    event_form = models.ForeignKey('the_eye.EventForm', on_delete=models.CASCADE)
