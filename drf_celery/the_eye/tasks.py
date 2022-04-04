@@ -34,7 +34,7 @@ def _validate_event(event_data):
 
         if event_name == "pageview" and event_category == "page interaction":
             serializer_payload = PageViewSerializer(data=payload)
-        elif event_name == "cta click" and event_category == "page interaction":
+        elif "click" in event_name and event_category == "page interaction":
             serializer_payload = PageClickSerializer(data=payload)
         elif event_name == "submit" and event_category == "form interaction":
             serializer_payload = EventFormSerializer(data=payload)
