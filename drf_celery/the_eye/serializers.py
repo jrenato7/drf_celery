@@ -8,10 +8,10 @@ from .models import Event, PageView, PageClick, Account, EventForm
 class ValidatePayload:
     def has_unknowns(self, attrs):
         """Verify if the data informed has unknown fields"""
-
         unknown = set(self.initial_data) - set(self.fields)
         if unknown:
-            raise serializers.ValidationError("Unknown field(s): {}".format(", ".join(unknown)))
+            errors = ", ".join(unknown)
+            raise serializers.ValidationError(f"Unknown field(s): {errors}")
         return attrs
 
 
@@ -42,7 +42,7 @@ class PageViewSerializer(serializers.ModelSerializer, ValidatePayload):
         return super().validate(attrs)
 
 
-class PageClickSerializer(serializers.Serializer, ValidatePayload):
+class PageClickSerializer(serializers.ModelSerializer, ValidatePayload):
     class Meta:
         model = PageClick
         exclude = ('event', )
@@ -52,7 +52,7 @@ class PageClickSerializer(serializers.Serializer, ValidatePayload):
         return super().validate(attrs)
 
 
-class AccountSerializer(serializers.Serializer, ValidatePayload):
+class AccountSerializer(serializers.ModelSerializer, ValidatePayload):
     class Meta:
         model = Account
         exclude = ('event_form', )
@@ -62,8 +62,8 @@ class AccountSerializer(serializers.Serializer, ValidatePayload):
         return super().validate(attrs)
 
 
-class EventFormSerializer(serializers.Serializer, ValidatePayload):
-    form = AccountSerializer()
+class EventFormSerializer(serializers.ModelSerializer, ValidatePayload):
+    form = serializers.DictField()
 
     class Meta:
         model = EventForm
@@ -71,6 +71,9 @@ class EventFormSerializer(serializers.Serializer, ValidatePayload):
 
     def validate(self, attrs):
         attrs = super().has_unknowns(attrs)
+        form_data = self.initial_data.get("form", {})
+        account_serializer = AccountSerializer(data=form_data)
+        account_serializer.is_valid(raise_exception=True)
         return super().validate(attrs)
 
     def create(self, validated_data):
