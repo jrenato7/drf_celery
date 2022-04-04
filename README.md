@@ -1,7 +1,15 @@
-# User behavior storage dervice with Django-Rest-Framework and Celery
-This project aims to provide an event aggregator for user actions on a generic client web.
+# User behavior storage service with Django-Rest-Framework and Celery
+This project aims to provide an event aggregator for user actions on a generic client web. With this goal in mind, the service stores the user interaction and responds to the client's web as fast as possible.
 
+The diagram shows the data flow:  
 
+![Diagram](docs/event_aggregator.jpg)
+
+The aggregator receives the client request, stores the request body, and returns a success message. This approach guarantees a reduction in the communication time between the client and the aggregator since all the data validation, database storage, and log errors will occur later on in the process.  
+
+The data treatment validates the event based on the vital info: _name_, _category_, _session_id_, _timestamp_, and _data_. After that, the payload validation starts using the event _name_ and _category_ to determine which class should validate the content. 
+
+IF any validation error occurs during these steps, the system creates a new error log with the event data and the validation errors in the database.
 
 ## How to set up the environment?
 
