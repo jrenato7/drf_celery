@@ -5,13 +5,17 @@ DEBUG=True
 ALLOWED_HOSTS=127.0.0.1, .localhost
 
 SQL_ENGINE=django.db.backends.postgresql
-SQL_DATABASE=drf_celery_db
-SQL_HOST=drf_celery_db
+SQL_DATABASE=celery_db
+SQL_HOST=celery_db
 SQL_PORT=5432
 
-DATABASE=postgres
-
-DJANGO_SETTINGS_MODULE=customers.settings
+DJANGO_SETTINGS_MODULE=drf_celery.settings
 
 # This variable is used by swagger.
 BASE_URL=http://localhost:5050
+
+CELERY_BROKER=redis://redis:6379
+
+CELERY_BACKEND=redis://redis:6379
+
+CELERY_ENABLED=True

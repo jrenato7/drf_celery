@@ -3,6 +3,9 @@ clean:
 	@find . -name "*.pyo" | xargs rm -rf
 	@find . -name "__pycache__" -type d | xargs rm -rf
 
+build: clean
+	@docker-compose build
+
 up: clean
 	@docker-compose up -d --build
 
