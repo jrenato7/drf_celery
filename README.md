@@ -7,7 +7,9 @@ The diagram shows the data flow:
 
 The aggregator receives the client request, stores the request body, and returns a success message. This approach guarantees a reduction in the communication time between the client and the aggregator since all the data validation, database storage, and log errors will occur later on in the process.  
 
-The data treatment validates the event based on the vital info: _name_, _category_, _session_id_, _timestamp_, and _data_. After that, the payload validation starts using the event _name_ and _category_ to determine which class should validate the content. 
+
+The data treatment validates the event based on the vital info: _name_, _category_, _session_id_, _timestamp_, and _data_. After that, the payload validation starts using the event _name_ and _category_ to determine which class should validate the content and insert it into the DB. 
+
 
 IF any validation error occurs during these steps, the system creates a new error log with the event data and the validation errors in the database.
 
@@ -51,6 +53,8 @@ docker-compose exec web python manage.py test
 
 You should be able to send data to the service by the URL: http://localhost:5050/event/
 
+The system has an _admin_ area available on the URL: http://localhost:5050/admin/. In the _admin_ area is possible to see the error logs and the events created successfully.
+
 ### Insomnia/Postman
 You can connect to the API by adding the settings on the insomnia/postman app:
 
@@ -76,3 +80,20 @@ Request body:
   "timestamp": "2022-04-01 09:15:27.243860"
 }
 ```
+
+The categories and names available are:
+
+```console
+"category": "page interaction", "name": "pageview" 
+```
+_used when a new page is loaded._
+
+```console
+"category": "page interaction", "name": "* click" 
+```
+_used when the user clicks on any element in the page._
+
+```console
+"category": "form interaction", "name": "submit" 
+```
+_used when the user submit the form._
