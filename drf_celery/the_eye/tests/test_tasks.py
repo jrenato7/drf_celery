@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from the_eye.tasks import validate_event, SerializerError
+from the_eye.tasks import validate_event, SerializerError, InvalidPayload
 from the_eye.models import Event, PageView, PageClick, EventForm, Account
 
 
@@ -119,7 +119,7 @@ class ValidateEventEventFormSuccessTest(TestCase):
 class ValidateEventEventFormErrorTest(TestCase):
 
     def setUp(self):
-        self.event_form = {
+        self.event_data = {
             "session_id": "d66ac88b-f801-4984-953f-5c6b266494a0",
             "category": "form interaction",
             "name": "submit",
@@ -134,5 +134,38 @@ class ValidateEventEventFormErrorTest(TestCase):
 
     def test_invalid_payload_page_click(self):
         with self.assertRaises(SerializerError):
-            validate_event(self.event_form)
+            validate_event(self.event_data)
             self.assertRaisesMessage(SerializerError, 'Payload Invalid!')
+
+
+class ValidateEventEventDataErrorTest(TestCase):
+
+    def setUp(self):
+        self.event_data = {
+            "session_id": "d66ac88b-f801-4984-953f-5c6b266494a0",
+            "name": "foo",
+            "category": "bar",
+            "data": {"foo": "bar"},
+            "timestamp": "2022-04-01 00:00:0.000000"
+        }
+
+    def test_invalid_event_data(self):
+        with self.assertRaises(InvalidPayload):
+            validate_event(self.event_data)
+            self.assertRaisesMessage(InvalidPayload, 'Payload not found!')
+
+
+class ValidateEventPayloadNotFoundTest(TestCase):
+
+    def setUp(self):
+        self.event_form = {
+            "session_id": "d66ac88b-f801-4984-953f-5c6b266494a0",
+            "name": "submit",
+            "data": {"foo": "bar"},
+            "timestamp": "2022-04-01 00:00:0.000000"
+        }
+
+    def test_invalid_event_data(self):
+        with self.assertRaises(SerializerError):
+            validate_event(self.event_form)
+            self.assertRaisesMessage(SerializerError, 'Event Invalid!')
