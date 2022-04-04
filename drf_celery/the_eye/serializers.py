@@ -71,14 +71,20 @@ class EventFormSerializer(serializers.ModelSerializer, ValidatePayload):
 
     def validate(self, attrs):
         attrs = super().has_unknowns(attrs)
+
+        # This will verify if the form content has the expected fields
         form_data = self.initial_data.get("form", {})
         account_serializer = AccountSerializer(data=form_data)
+        # If the validation doesn't work, an exception will raise.
         account_serializer.is_valid(raise_exception=True)
+
         return super().validate(attrs)
 
     def create(self, validated_data):
         account_data = validated_data.pop('form', None)
 
+        # Creates the event_form record and returns the ID required for
+        # the account record.
         event_form = EventForm.objects.create(**validated_data)
         event_form.save()
 

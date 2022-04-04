@@ -23,7 +23,7 @@ def validate_event_task(event):
 def validate_event(event_data):
     serializer_event = EventSerializer(data=event_data)
 
-    # validate event
+    # validate the main event fields
     event_valid = serializer_event.is_valid()
 
     if event_valid:
@@ -32,6 +32,7 @@ def validate_event(event_data):
         event_name = serializer_event.validated_data["name"]
         event_category = serializer_event.validated_data["category"]
 
+        # Determine with class should be used to validate the payload.
         if event_name == "pageview" and event_category == "page interaction":
             serializer_payload = PageViewSerializer(data=payload)
         elif "click" in event_name and event_category == "page interaction":
@@ -63,6 +64,7 @@ def validate_event(event_data):
 
 
 def log_error(event_data, message, errors=None):
+    """Insert the event data and the errors into the DB."""
     error_data = {
         'event': json.dumps(event_data),
         'errors': json.dumps(errors) if errors else None,
