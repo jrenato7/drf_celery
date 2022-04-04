@@ -1,7 +1,9 @@
 from django.test import TestCase
 
-from the_eye.tasks import validate_event, SerializerError, InvalidPayload
-from the_eye.models import Event, PageView, PageClick, EventForm, Account
+from the_eye.tasks import validate_event, SerializerError, InvalidPayload, \
+    log_error
+from the_eye.models import Event, PageView, PageClick, EventForm, Account, \
+    ErrorLog
 
 
 class ValidateEventPageViewSuccessTest(TestCase):
@@ -40,6 +42,9 @@ class ValidateEventPageViewErrorTest(TestCase):
     def test_invalid_payload_page_view(self):
         with self.assertRaises(SerializerError):
             validate_event(self.page_view)
+
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
 
 
 class ValidateEventPageClickSuccessTest(TestCase):
@@ -85,6 +90,9 @@ class ValidateEventPageClickErrorTest(TestCase):
         with self.assertRaises(SerializerError):
             validate_event(self.page_click)
             self.assertRaisesMessage(SerializerError, 'Payload Invalid!')
+
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
 
 
 class ValidateEventEventFormSuccessTest(TestCase):
@@ -137,6 +145,9 @@ class ValidateEventEventFormErrorTest(TestCase):
             validate_event(self.event_data)
             self.assertRaisesMessage(SerializerError, 'Payload Invalid!')
 
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
+
 
 class ValidateEventEventDataErrorTest(TestCase):
 
@@ -154,6 +165,9 @@ class ValidateEventEventDataErrorTest(TestCase):
             validate_event(self.event_data)
             self.assertRaisesMessage(InvalidPayload, 'Payload not found!')
 
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
+
 
 class ValidateEventPayloadNotFoundTest(TestCase):
 
@@ -169,3 +183,23 @@ class ValidateEventPayloadNotFoundTest(TestCase):
         with self.assertRaises(SerializerError):
             validate_event(self.event_form)
             self.assertRaisesMessage(SerializerError, 'Event Invalid!')
+
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
+
+
+class LogErrorTest(TestCase):
+
+    def setUp(self):
+        event_data = {
+            "session_id": "d66ac88b-f801-4984-953f-5c6b266494a0",
+            "name": "submit",
+            "data": {"foo": "bar"},
+            "timestamp": "2022-04-01 00:00:0.000000"
+        }
+        error_data = {"timestamp": ["The timestamp is in the future!"]}
+        message = "Event Invalid!"
+        log_error(event_data, message, error_data)
+
+    def test_create_log_error(self):
+        self.assertTrue(ErrorLog.objects.exists)
