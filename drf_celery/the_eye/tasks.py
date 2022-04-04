@@ -17,10 +17,10 @@ class SerializerError(Exception):
 
 @shared_task()
 def validate_event_task(event):
-    return _validate_event(event)
+    return validate_event(event)
 
 
-def _validate_event(event_data):
+def validate_event(event_data):
     serializer_event = EventSerializer(data=event_data)
 
     # validate event
@@ -41,7 +41,6 @@ def _validate_event(event_data):
         else:
             message = 'Payload not found!'
             log_error(event_data, message)
-
             raise InvalidPayload(message)
 
         if serializer_payload.is_valid():
