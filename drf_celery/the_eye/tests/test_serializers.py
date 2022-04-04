@@ -50,5 +50,11 @@ class ValidatePayloadEventFormSerializerSuccessTest(TestCase):
 
     def test_unknown_message(self):
         _assert = self.payload_serializer.errors['non_field_errors'][0]
-        expected = "Unknown field(s): other_name, password"
-        self.assertEqual(expected, _assert)
+        contents = [
+            'Unknown field(s):',
+            'other_name',
+            'password',
+        ]
+        for content in contents:
+            with self.subTest():
+                self.assertIn(content, _assert)
